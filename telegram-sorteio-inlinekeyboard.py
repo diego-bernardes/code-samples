@@ -28,7 +28,6 @@ WHERE user_id = {id_user}'''
 def sorteio():
     cadastrados = [i[0] for i in query(sql_select_ids)]
     ganhador = random.choice(cadastrados)
-    print(ganhador)
     try:
         user = bot.get_chat_member(chat_id, ganhador)
         if not 'left' in user.status and not 'kicked' in user.status:
@@ -79,13 +78,10 @@ def inscricao(mensagem):
     nome = remove_caracteres(mensagem.from_user.first_name)
     user_id = mensagem.from_user.id
     dados = query(sql_consulta.format(user_id=user_id))
-    print(nome)
     if not dados:
         query(sql_insert.format(id_user=user_id, nome=nome, username=username), operacao='cad')
-        print('cadastrado')
     else:
         query(sql_update.format(id_user=user_id, nome=nome, username=username), operacao='up')
-        print('atualizado')
         
 @bot.message_handler(commands=['cadastrados'])
 def get_cadastrados(mensagem):
@@ -114,7 +110,6 @@ User_ID: {0}'''.format(*query(sql_consulta.format(user_id=resultado[1]))[0]))
 @bot.callback_query_handler(func=lambda call: True)
 def get_callback(mensagem):
     if mensagem.data == 'inscricao':
-        print(mensagem.from_user.first_name)
         inscricao(mensagem)
         
 bot.polling()
